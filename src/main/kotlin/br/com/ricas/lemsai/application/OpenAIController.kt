@@ -9,7 +9,7 @@ class OpenAIController(
 ) {
     @PostMapping("/ai")
     fun call(@RequestParam question: String) {
-        val exec = openAIService.exec("quem descobriu o brasil")
+        val exec = openAIService.exec(question)
         println(exec)
 
     }
