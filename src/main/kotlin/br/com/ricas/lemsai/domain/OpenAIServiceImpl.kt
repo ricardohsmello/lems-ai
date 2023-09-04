@@ -8,8 +8,7 @@ import org.springframework.stereotype.Service
 @Service
 class OpenAIServiceImpl(
 
-) : OpenAIService{
-
+) : OpenAIService {
 
     override fun exec(question: String): OpenAIResponse {
 
