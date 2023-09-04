@@ -10,7 +10,6 @@ class OpenAIServiceImpl(
 
 ) : OpenAIService {
     override fun exec(question: String): OpenAIResponse {
-
         val openAI = OpenAI()
         openAI.makeQuestion(question)
     }
