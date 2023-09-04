@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service
 class OpenAIServiceImpl(
 
 ) : OpenAIService {
-
     override fun exec(question: String): OpenAIResponse {
 
         val openAI = OpenAI()
