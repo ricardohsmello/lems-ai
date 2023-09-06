@@ -1,4 +1,4 @@
-package br.com.ricas.lemsai.resouces
+package br.com.ricas.lemsai.domain.ai
 
 data class OpenAIResponse(
     val id: String,
