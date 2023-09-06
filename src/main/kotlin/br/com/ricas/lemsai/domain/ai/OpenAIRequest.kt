@@ -1,4 +1,4 @@
-package br.com.ricas.lemsai.resouces
+package br.com.ricas.lemsai.domain.ai
 
 data class OpenAIRequest(
     val model: String,
