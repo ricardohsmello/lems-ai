@@ -2,11 +2,11 @@ package br.com.ricas.lemsai.domain.service.impl
 
 import br.com.ricas.lemsai.domain.ai.AIMessage
 import br.com.ricas.lemsai.domain.ai.OpenAIResponse
+import br.com.ricas.lemsai.domain.enum.ArticleSections
 import br.com.ricas.lemsai.domain.service.OpenAIService
 import br.com.ricas.lemsai.resouces.HttpClientRequest
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import java.lang.StringBuilder
 import java.util.*
 
 @Service
@@ -24,82 +24,100 @@ class OpenAIServiceImpl(
     @Value("\${openai.api.url}")
     private val apiURL: String = ""
 
-    private val article: StringBuilder? = null
+    @Value("\${openai.api.message.first}")
+    private val firstMessage: String = ""
+
+    @Value("\${openai.api.message.next}")
+    private val nextMessage: String = ""
 
     private var mainContent: String = ""
-    override fun requestChatGPT(input: String): StringBuilder? {
-
-        val messages = listOf(
-            AIMessage(role = "system", content = "You are a chat assistant that speaks about anything."),
-            AIMessage(role = "user", content = "" +
-                    "Por favor, crie um artigo abordando o tópico sobre $input." +
-                    " \t Este artigo incluirá uma introdução, três seções distintas e uma conclusão. " +
-                    " \t  IMPORTANTE: Cada secao do artigo deve ter no máximo 250  caracteres!")
-        )
-
-        val detailContentList = listOf(
-            "Introdução",
-            "Seção 1",
-            "Seção 2",
-            "Seção 3",
-            "Conclusão"
-        )
-
+    override fun createArticle(input: String): StringBuilder {
+        val messages = getFormattedMessages(firstMessage, input)
+        val response = requestChatGPT(messages)
         val articleBuilder = StringBuilder()
 
-        sendRequest(messages, detailContentList, 0, articleBuilder)
+        prepareRequest(
+            listOf(
+                AIMessage(
+                    role = "user", content = response.choices[0].message.content
+                )
+            ), getArticleSections(), 0, articleBuilder
+        )
 
         return articleBuilder
     }
 
 
-    private fun sendRequest(messages: List<AIMessage>, detailContentList: List<String> = emptyList(), currentIndex: Int = 0, articleBuilder: StringBuilder) {
-        if (currentIndex > detailContentList.size) {
+    private fun prepareRequest(
+        messages: List<AIMessage>,
+        articleSections: List<String> = emptyList(),
+        currentIndex: Int = 0,
+        articleBuilder: StringBuilder
+    ) {
+        if (currentIndex >= articleSections.size) {
             return
         }
-        val detailContent = detailContentList[currentIndex]
+        val articleSection = articleSections[currentIndex]
 
-        println("iniciando criacao de $detailContent ..")
+        if (currentIndex == 0) {
+            mainContent = messages[0].content
+        }
 
-        val response = httpClientRequest.sendRequest(
+        sendRequest(articleSection, articleSections, currentIndex, articleBuilder)
+
+    }
+
+    private fun sendRequest(
+        articleSection: String,
+        articleSections: List<String>,
+        currentIndex: Int,
+        articleBuilder: StringBuilder
+    ) {
+
+        val messages = getFormattedMessages(mainContent + nextMessage, articleSection)
+        val response = requestChatGPT(messages)
+
+        buildStringBuilderResponse(articleSection, response, articleBuilder)
+        prepareRequest(messages, articleSections, currentIndex + 1, articleBuilder)
+    }
+
+    private fun buildStringBuilderResponse(
+        articleSection: String,
+        response: OpenAIResponse,
+        articleBuilder: StringBuilder
+    ) {
+        println("Starting $articleSection creation ..")
+        articleBuilder.append("\n\n\n")
+        articleBuilder.append(response.choices[0].message.content)
+        println("$articleSection finished!")
+    }
+
+    private fun requestChatGPT(messages: List<AIMessage>) =
+        httpClientRequest.sendRequest(
             apiKey = apiKey,
             apiModel = apiModel,
             apiURL = apiURL,
             messages
         )
 
-        articleBuilder.append("\n\n\n")
-        println("$detailContent finalizada!")
-
-        if (currentIndex == 0) {
-            mainContent = response.choices[0].message.content
-            prepareAndRequest(detailContent, detailContentList, currentIndex, articleBuilder)
-        } else {
-            articleBuilder.append(response.choices[0].message.content)
-            prepareAndRequest(detailContent, detailContentList, currentIndex, articleBuilder)
-        }
-
+    private fun getArticleSections(): List<String> {
+        return listOf(
+            ArticleSections.INTRODUCTION.name,
+            ArticleSections.SECTION_1.name,
+            ArticleSections.SECTION_2.name,
+            ArticleSections.SECTION_3.name,
+            ArticleSections.CONCLUSION.name
+        )
     }
-
-    private fun prepareAndRequest(
-        detailContent: String,
-        detailContentList: List<String>,
-        currentIndex: Int,
-        articleBuilder: StringBuilder
-    ) {
-        val messagesNew = listOf(
+    private fun getFormattedMessages(content: String, input: String): List<AIMessage> {
+        return listOf(
             AIMessage(
-                role = "user", content = "$mainContent \n\n" +
-                        "No texto acima, quero um detalhamento melhor sobre a $detailContent" +
-                        " com o titulo comecando com $detailContent" +
-                        " \t Importante: Todo conteúdo deve ter 2800 a 3000 caracteres e falar somente sobre $detailContent."
+                role = "user",
+                content = content.replace("{input}", input)
             )
         )
 
-        sendRequest(messagesNew, detailContentList, currentIndex + 1, articleBuilder)
     }
-
-
 }
 
 
