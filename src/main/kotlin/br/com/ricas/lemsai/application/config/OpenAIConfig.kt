@@ -23,6 +23,16 @@ class OpenAIConfig {
 
     @Value("\${openai.api.message.detail}")
     private val messageDetail: String = ""
+
+
+    @Value("\${openai.api.message.main}")
+    private val messageMain: String = ""
+
+    @Bean
+    fun messageMain(): String {
+        return messageMain
+    }
+
     @Bean
     fun apiKey(): String {
         return apiKey
@@ -52,4 +62,6 @@ class OpenAIConfig {
     fun messageDetail(): String {
         return messageDetail
     }
+
+
 }
