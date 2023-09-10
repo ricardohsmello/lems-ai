@@ -1,8 +1,10 @@
-package br.com.ricas.lemsai.resouces
+package br.com.ricas.lemsai.infrastructure.openai
 
 import br.com.ricas.lemsai.domain.ai.AIMessage
 import br.com.ricas.lemsai.domain.ai.OpenAIRequest
 import br.com.ricas.lemsai.domain.ai.OpenAIResponse
+import br.com.ricas.lemsai.domain.port.OpenAIRequestPort
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
@@ -12,9 +14,16 @@ import org.springframework.web.client.RestTemplate
 import java.net.URI
 
 @Component
-class HttpClientRequest(private val restTemplate: RestTemplate) {
+class OpenAIRequestPortImpl(
+    private val restTemplate: RestTemplate
+) : OpenAIRequestPort {
 
-    fun sendRequest(apiKey: String, apiModel: String, apiURL: String, messages: List<AIMessage>, ): OpenAIResponse {
+    override fun requestChatGPT(
+        apiModel: String,
+        apiKey: String,
+        apiURL: String,
+        messages: List<AIMessage>
+    ): OpenAIResponse {
         val headers = createHeaders(apiKey)
         val body = createRequestBody(headers, apiURL, apiModel, messages)
 
@@ -46,4 +55,5 @@ class HttpClientRequest(private val restTemplate: RestTemplate) {
     private fun getResponseBody(responseEntity: ResponseEntity<OpenAIResponse>): OpenAIResponse {
         return responseEntity.body ?: throw RuntimeException("Failed to get OpenAI response")
     }
+
 }
