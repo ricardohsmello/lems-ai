@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lems-ai Article creator</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-sm-8">
+            <div class="card mt-5">
+                <div class="card-body">
+                    <h3 class="card-title text-center mb-4">Lemas Article Creator</h3>
+                    <p class="card-text text-center" id="article"></p>
+
+                    <!-- Adicione um campo de entrada para o tema -->
+                    <input type="text" id="themeInput" class="form-control mb-3" placeholder="Tema do Artigo">
+                    <input type="text" id="sectionNumberInput" class="form-control mb-3" placeholder="Número de Seções">
+                    <input type="text" id="subSectionNumberInput" class="form-control mb-3" placeholder="Número de Subseções">
+
+                    <!-- Modifique o botão para chamar a função com o tema -->
+                    <button id="createButton" class="btn btn-warning btn-block mt-3" style="background-color: #f7dc6f; color: #4a4e4d;" onclick="createArticle()">Criar Artigo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    function createArticle() {
+        const theme = $("#themeInput").val();
+        const sectionNumbers = $("#sectionNumberInput").val();
+        const subSectionNumbers = $("#subSectionNumberInput").val();
+
+        $("#createButton").prop("disabled", true);
+
+        $.post("/article/create", { theme: theme, sectionNumbers: sectionNumbers, subSectionNumbers: subSectionNumbers}, function(response) {
+
+            const keywords = ["Introdução:", "Seção 1:", "Seção 2:", "Seção 3:", "Conclusão:"];
+            for (const keyword of keywords) {
+                const regex = new RegExp(`(${keyword})`, "gi");
+                response = response.replace(regex, match => formatText(match));
+            }
+
+            $("#article").html(response);
+            $("#createButton").prop("disabled", false);
+        });
+    }
+
+    function formatText(text) {
+       return `<br><b><h1>${text}</b></h1><br>`;
+    }
+
+
+</script>
+</body>
+</html>
