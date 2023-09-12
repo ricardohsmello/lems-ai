@@ -28,6 +28,21 @@ class OpenAIConfig {
     @Value("\${openai.api.message.main}")
     private val messageMain: String = ""
 
+    @Value("\${openai.api.message.sectionTitle}")
+    private val sectionTitle: String =""
+
+    @Value("\${openai.api.message.sectionContent}")
+    private val sectionContent: String =""
+
+    @Bean
+    fun sectionTitle(): String {
+        return sectionTitle
+    }
+    @Bean
+    fun sectionContent(): String {
+        return sectionContent
+    }
+
     @Bean
     fun messageMain(): String {
         return messageMain
