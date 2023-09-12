@@ -26,47 +26,27 @@ class CreateArticleUseCaseImpl(
 
         println("Starting article creation ...")
 
+        val elapsedTime = timeExecutionControl.start {
+            completeArticle = prepareArticleContentUseCase.exec(
+                getArticleStructureBase(
+                    prepareArticleStructureUseCase.exec(
+                        themeTitle,
+                        sectionsNumber,
+                        subSectionNumber
+                    )
+                ),
+                totalSections = Integer.parseInt(sectionsNumber) + 2
+            )
+        }
 
+        val formattedTime = timeExecutionControl.formatElapsedTime(elapsedTime)
 
-
-//        val elapsedTime = timeExecutionControl.start {
-//            completeArticle = prepareArticleContentUseCase.exec(
-//                getArticleStructureBase(
-//                    prepareArticleStructureUseCase.exec(
-//                        themeTitle,
-//                        sectionsNumber,
-//                        subSectionNumber
-//                    )
-//                ),
-//                totalSections = Integer.parseInt(sectionsNumber) + 2
-//            )
-//        }
-//
-//        val formattedTime = timeExecutionControl.formatElapsedTime(elapsedTime)
-//
-//        println("\n\nTotal time for generation: $formattedTime")
+        println("\n\nTotal time for generation: $formattedTime")
 
         return completeArticle
 
     }
 
-    private fun getTitleAndContent(
-        themeTitle: String,
-        index: Int,
-        sectionsNumber: Int,
-        context: StringBuilder
-
-    ) : Map<String, String> {
-
-        createArticleSectionsTitleUseCase.exec(themeTitle, getSectionTitle(index, sectionsNumber), context) // Introducao: Corinthians, uma historia linda
-//
-//        val mapOf = mapOf(
-//             to prepareArticleSectionsTitleUseCase.exec(themeTitle, getSectionTitle(sectionsNumber))
-//            1990 to "Julio fernandes"
-//        )
-
-
-    }
 
     private fun getSectionTitle(index: Int, sectionsNumber: Int): String {
        return when (index) {
@@ -74,7 +54,6 @@ class CreateArticleUseCaseImpl(
            sectionsNumber -> "Conclusão"
            else -> "Seção " + (index + 1)
        }
-
     }
 
     private fun getArticleStructureBase(articleStructure: StringBuilder) =
