@@ -2,20 +2,18 @@ package br.com.ricas.lemsai.domain.usecase.impl
 
 import br.com.ricas.lemsai.domain.entity.Article
 import br.com.ricas.lemsai.domain.entity.Section
-import br.com.ricas.lemsai.domain.usecase.CreateArticleSectionContentUseCase
-import br.com.ricas.lemsai.domain.usecase.CreateArticleSectionTitleUseCase
-import br.com.ricas.lemsai.domain.usecase.CreateArticleUseCase
+import br.com.ricas.lemsai.domain.usecase.*
 import br.com.ricas.lemsai.domain.util.TimeExecutionControl
 import org.springframework.stereotype.Service
 
 @Service
 class CreateArticleUseCaseImpl(
     val timeExecutionControl: TimeExecutionControl,
-    val createArticleSectionTitleUseCase: CreateArticleSectionTitleUseCase,
-    val createArticleSectionContentUseCase: CreateArticleSectionContentUseCase
+    val prepareArticleIntroductionUseCase: PrepareArticleIntroductionUseCase,
+    val prepareArticleSectionUseCase: PrepareArticleSectionUseCase,
+    val prepareArticleConclusionUseCase: PrepareArticleConclusionUseCase
 ) : CreateArticleUseCase {
 
-    lateinit var article: Article
     var sections: MutableList<Section> = mutableListOf()
 
     override fun exec(
@@ -30,68 +28,56 @@ class CreateArticleUseCaseImpl(
                     "\n Total sections: $sectionNumber" +
                     "\n Total subSections: $subSectionNumber")
 
-        val elapsedTime = timeExecutionControl.start {
-            val introduction = createIntroduction(
-                articleTheme = articleTheme
-            )
-            createSections(introduction, 1, sectionNumber, subSectionNumber)
+        val sections = mutableListOf<Section>()
 
-            createConclusion()
+        val elapsedTime = timeExecutionControl.start {
+
+//           sections.add(createIntroduction(articleTheme = articleTheme))
+
+
+            startCreation(
+                articleTheme = articleTheme,
+                sectionNumber = sectionNumber,
+                subSectionNumber = subSectionNumber
+            )
+
         }
 
         val formattedTime = timeExecutionControl.formatElapsedTime(elapsedTime)
 
-        article = Article(
+        println("\n\nTotal time for generation: $formattedTime")
+
+        return Article(
             durationTime = formattedTime,
             title = "",
             sections = sections
         )
-        println("\n\nTotal time for generation: $formattedTime")
-
-        return article
-
     }
 
-    private fun createConclusion() {
-        var theme = ""
-        sections.map {
-            theme = theme + " " + it.title
-        }
-
-        println("Starting conclusion creation")
-
-        val sectionTitle = createArticleSectionTitleUseCase.exec("Conclusão", theme)
-        val sectionContent = createArticleSectionContentUseCase.exec(sectionTitle)
-
-        sections.add(
-            Section(
-                order = sections.size,
-                title = "Conclusão",
-                isSubSection = false,
-                content = sectionContent
-            )
-        )
-    }
-    private fun createIntroduction(articleTheme: String) : String {
-        println("Starting introduction creation for theme $articleTheme")
-
-        val sectionTitle = createArticleSectionTitleUseCase.exec("introdução", articleTheme)
-        val sectionContent = createArticleSectionContentUseCase.exec(sectionTitle)
-
-        sections.add(
-            Section(
-                order = 0,
-                title = sectionTitle,
-                isSubSection = false,
-                content = sectionContent
-            )
+    private fun startCreation(articleTheme: String, sectionNumber: Int, subSectionNumber: Int) {
+        createIntroduction(
+            articleTheme = articleTheme
         )
 
-        return sectionTitle
+        createSections(
+            articleTheme = articleTheme,
+            index = 1,
+            sectionNumber = sectionNumber,
+            subSectionNumber = subSectionNumber
+        )
+
+        createConclusion(
+            articleTheme = articleTheme
+        )
     }
+
+    private fun createIntroduction(articleTheme: String): Section =
+        prepareArticleIntroductionUseCase.exec(articleTheme)
+
+
 
     private fun createSections(
-        introduction: String,
+        articleTheme: String,
         index: Int,
         sectionNumber: Int,
         subSectionNumber: Int
@@ -100,52 +86,53 @@ class CreateArticleUseCaseImpl(
             return
         }
 
-        println("Starting section $index creation")
+        val section = prepareArticleSectionUseCase.exec(
+            isSubSection = false,
+            sectionTitle = "Seção $index",
+            articleTheme = articleTheme,
+            titleAlreadyCreated = StringBuilder(titlesAlreadyCreated()))
 
-        val sectionTitle = createArticleSectionTitleUseCase.exec("Seção $index", introduction)
-        val sectionContent = createArticleSectionContentUseCase.exec(sectionTitle)
 
         sections.add(
-            Section(
-                order = index,
-                title = sectionTitle,
-                isSubSection = false,
-                content = sectionContent
-            )
+            section
         )
 
         createSubSections(
-            order = index + 1,
-            theme = sectionTitle,
+            theme = section.title.toString(),
             totalSubSections = subSectionNumber
         )
 
-        createSections(introduction,index +1, sectionNumber, subSectionNumber)
+        createSections(articleTheme,index +1, sectionNumber, subSectionNumber)
     }
 
     private fun createSubSections(
-        order: Int,
         theme: String,
         totalSubSections: Int
     ) {
 
-        var ordenation = order
-
         for (i in 1 .. totalSubSections) {
-            println("Starting subSection $i creation")
-            val sectionTitle = createArticleSectionTitleUseCase.exec("SubSeção $i", theme)
-            val sectionContent = createArticleSectionContentUseCase.exec(sectionTitle)
+
+            val subSection = prepareArticleSectionUseCase.exec(
+                isSubSection = true,
+                sectionTitle = "Subseção $i",
+                articleTheme = theme,
+                titleAlreadyCreated = StringBuilder(titlesAlreadyCreated()))
 
             sections.add(
-                Section(
-                    order = ordenation,
-                    title = sectionTitle,
-                    isSubSection = true,
-                    content = sectionContent
-                )
+                subSection
             )
-
-            ordenation++
         }
     }
+
+    private fun createConclusion(articleTheme: String) {
+        sections.add(prepareArticleConclusionUseCase.exec(
+            title = articleTheme,
+            context = StringBuilder(titlesAlreadyCreated())
+        ))
+    }
+
+    private fun titlesAlreadyCreated(): String {
+        return sections.joinToString(" ") { it.title }
+    }
+
 }
