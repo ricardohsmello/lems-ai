@@ -15,13 +15,15 @@ class OpenAIConfig {
     @Value("\${openai.api.url}")
     private lateinit var apiURL: String
 
+    @Value("\${openai.api.message.articleIntroductionTitle}")
+    private val articleIntroductionTitle: String = ""
+
+    @Value("\${openai.api.message.articleConclusionContent}")
+    private val articleConclusionContent: String = ""
+
+
     @Value("\${openai.api.message.articleSectionTitle}")
     private val articleSectionTitle: String = ""
-
-
-    @Value("\${openai.api.message.articleSubSectionTitle}")
-    private val articleSubSectionTitle: String = ""
-
 
     @Value("\${openai.api.message.articleSectionContent}")
     private val articleSectionContent: String = ""
@@ -40,13 +42,18 @@ class OpenAIConfig {
     }
 
     @Bean
-    fun articleSectionTitle(): String {
-        return articleSectionTitle
+    fun articleIntroductionTitle(): String {
+        return articleIntroductionTitle
     }
 
     @Bean
-    fun articleSubSectionTitle(): String {
-        return articleSubSectionTitle
+    fun articleConclusionContent(): String {
+        return articleConclusionContent
+    }
+
+    @Bean
+    fun articleSectionTitle(): String {
+        return articleSectionTitle
     }
     @Bean
     fun articleSectionContent(): String {
