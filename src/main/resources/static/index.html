@@ -24,7 +24,19 @@
                     <!-- Modifique o botão para chamar a função com o tema -->
                     <button id="createButton" class="btn btn-warning btn-block mt-3" style="background-color: #f7dc6f; color: #4a4e4d;" onclick="createArticle()">Criar Artigo</button>
 
-                    <p class="card-text text-center" id="articleTitle"></p>
+                    <p class="card-title text-center mb-4 smaller-font" id="durationTime" style="margin-top: 50px;"></p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-sm-8">
+            <div class="card mt-5">
+                <div class="card-body">
                     <p class="card-text text-center" id="article"></p>
                 </div>
             </div>
@@ -39,63 +51,70 @@
         .left-align {
             text-align: left;
         }
-
+       .smaller-font {
+         font-size: 16px;
+        }
         .center {
             text-align: center;
         }
     </style>
 <script>
-    function createArticle() {
-        const theme = $("#themeInput").val();
-        const sectionNumbers = $("#sectionNumberInput").val();
-        const subSectionNumbers = $("#subSectionNumberInput").val();
+  function createArticle() {
+    const theme = $("#themeInput").val();
+    const sectionNumbers = $("#sectionNumberInput").val();
+    const subSectionNumbers = $("#subSectionNumberInput").val();
 
-        $("#createButton").prop("disabled", true);
+    $("#createButton").prop("disabled", true);
 
-        $.post("/article/create", { theme: theme, sectionNumbers: sectionNumbers, subSectionNumbers: subSectionNumbers}, function(response) {
+    $.post("/article/create", { theme: theme, sectionNumbers: sectionNumbers, subSectionNumbers: subSectionNumbers }, function (response) {
 
-              if (response.sections) {
+        if (response.sections) {
+            var articleContentElement = document.getElementById("article");
+            var durationTimeElement = document.getElementById("durationTime");
 
-                    var articleTitle = document.getElementById("articleTitle");
-                    var articleContentElement = document.getElementById("article");
+            var contentDurationTime = document.createElement("p");
+            contentDurationTime.textContent = "The article took " + response.durationTime + " to be created"  ;
+            durationTimeElement.appendChild(contentDurationTime);
 
-                    var articleTitleElement = document.createElement("h1");
-                    articleTitleElement.textContent = response.title;
-                    articleTitle.appendChild(articleTitleElement);
+            response.sections.forEach(function (section) {
+                if (section.isSubSection) {
+                    var ulElement = document.createElement("ul");
+                    ulElement.className = "left-align";
+
+                    var titleLiElement = document.createElement("li");
+                    var titleElement = document.createElement("h6");
+                    titleElement.textContent = section.title;
+                    titleElement.className = "left-align";
+
+                    titleLiElement.appendChild(titleElement);
+                    ulElement.appendChild(titleLiElement);
+
+                    var contentElement = document.createElement("p");
+                    contentElement.textContent = section.content;
+                    contentElement.className = "left-align";
+
+                    ulElement.appendChild(contentElement);
+
+                    articleContentElement.appendChild(ulElement);
+                } else {
+                    var titleElement = document.createElement("h3");
+                    titleElement.textContent = section.title;
+                    titleElement.className = "left-align";
+
+                    var contentElement = document.createElement("p");
+                    contentElement.textContent = section.content;
+                    contentElement.className = "left-align";
+
+                    articleContentElement.appendChild(titleElement);
+                    articleContentElement.appendChild(contentElement);
+                }
+            });
+        }
 
 
-                    response.sections.forEach(function(section) {
-                        // Cria um elemento <h2> para exibir o título
-                        var titleElement = document.createElement(section.isSubSection ? "h6" : "h3");
-                        titleElement.textContent = section.title;
-                        titleElement.className = "left-align";
-
-                        // Cria um elemento <p> para exibir o conteúdo
-                        var contentElement = document.createElement("p");
-                        contentElement.textContent = section.content;
-                        contentElement.className = "left-align";
-
-                 // Adiciona margem inferior entre subseções
-                        if (section.isSubSection) {
-                            titleElement.style.marginLeft = "10px"; // 10px ou o valor desejado
-                            contentElement.style.marginLeft = "20px"; // 20px ou o valor desejado
-                        }
-
-                        // Adiciona os elementos ao elemento pai (articleContentElement)
-                        articleContentElement.appendChild(titleElement);
-                        articleContentElement.appendChild(contentElement);
-                    });
-             }
-
-<!--            $("#article").html(response);-->
-<!--            $("#createButton").prop("disabled", false);-->
-        });
-    }
-
-    function formatText(text) {
-       return `<br><b><h1>${text}</b></h1><br>`;
-    }
-
+        $("#createButton").prop("disabled", false);
+    });
+}
 
 </script>
 </body>
