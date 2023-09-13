@@ -24,7 +24,7 @@
                     <!-- Modifique o botão para chamar a função com o tema -->
                     <button id="createButton" class="btn btn-warning btn-block mt-3" style="background-color: #f7dc6f; color: #4a4e4d;" onclick="createArticle()">Criar Artigo</button>
 
-                    <p class="card-title text-center mb-4 smaller-font" id="durationTime" style="margin-top: 50px;"></p>
+                    <p class="card-title text-center mb-4 smaller-font" id="info" style="margin-top: 50px;"></p>
 
                 </div>
             </div>
@@ -64,17 +64,21 @@
     const sectionNumbers = $("#sectionNumberInput").val();
     const subSectionNumbers = $("#subSectionNumberInput").val();
 
+    var contentInfo = document.createElement("p");
+    var infoElement = document.getElementById("info");
+    contentInfo.textContent = "Por favor aguarde .. ";
+    infoElement.appendChild(contentInfo);
+
     $("#createButton").prop("disabled", true);
 
     $.post("/article/create", { theme: theme, sectionNumbers: sectionNumbers, subSectionNumbers: subSectionNumbers }, function (response) {
 
         if (response.sections) {
             var articleContentElement = document.getElementById("article");
-            var durationTimeElement = document.getElementById("durationTime");
 
-            var contentDurationTime = document.createElement("p");
-            contentDurationTime.textContent = "The article took " + response.durationTime + " to be created"  ;
-            durationTimeElement.appendChild(contentDurationTime);
+
+            contentInfo.textContent = "The article took " + response.durationTime + " to be created"  ;
+
 
             response.sections.forEach(function (section) {
                 if (section.isSubSection) {
@@ -97,7 +101,7 @@
 
                     articleContentElement.appendChild(ulElement);
                 } else {
-                    var titleElement = document.createElement("h3");
+                    var titleElement = document.createElement("h4");
                     titleElement.textContent = section.title;
                     titleElement.className = "left-align";
 
