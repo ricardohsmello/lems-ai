@@ -14,7 +14,7 @@
             <div class="card mt-5">
                 <div class="card-body">
                     <h3 class="card-title text-center mb-4">Lemas Article Creator</h3>
-                    <p class="card-text text-center" id="article"></p>
+
 
                     <!-- Adicione um campo de entrada para o tema -->
                     <input type="text" id="themeInput" class="form-control mb-3" placeholder="Tema do Artigo">
@@ -23,6 +23,8 @@
 
                     <!-- Modifique o botão para chamar a função com o tema -->
                     <button id="createButton" class="btn btn-warning btn-block mt-3" style="background-color: #f7dc6f; color: #4a4e4d;" onclick="createArticle()">Criar Artigo</button>
+
+                    <p class="card-text text-center" id="article"></p>
                 </div>
             </div>
         </div>
@@ -31,7 +33,16 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<style>
+        /* Seus estilos CSS aqui */
+        .left-align {
+            text-align: left;
+        }
 
+        .center {
+            text-align: center;
+        }
+    </style>
 <script>
     function createArticle() {
         const theme = $("#themeInput").val();
@@ -42,14 +53,45 @@
 
         $.post("/article/create", { theme: theme, sectionNumbers: sectionNumbers, subSectionNumbers: subSectionNumbers}, function(response) {
 
-            const keywords = ["Introdução:", "Seção 1:", "Seção 2:", "Seção 3:", "Conclusão:"];
-            for (const keyword of keywords) {
-                const regex = new RegExp(`(${keyword})`, "gi");
-                response = response.replace(regex, match => formatText(match));
+          if (response.sections) {
+                var articleContentElement = document.getElementById("article");
+
+                response.sections.forEach(function(section) {
+                    // Cria um elemento <h2> para exibir o título
+                    var titleElement = document.createElement(section.isSubSection ? "h6" : "h2");
+                    titleElement.textContent = section.title;
+                    titleElement.className = "left-align";
+
+                    // Cria um elemento <p> para exibir o conteúdo
+                    var contentElement = document.createElement("p");
+                    contentElement.textContent = section.content;
+                    contentElement.className = "center";
+
+                    var subSectionList;
+
+                    if (section.isSubSection) {
+                        if (!subSectionList) {
+                            subSectionList = document.createElement("ul");
+                            articleContentElement.appendChild(subSectionList);
+                        }
+                        var subSectionListItem = document.createElement("li");
+                        subSectionListItem.appendChild(titleElement);
+                        subSectionListItem.appendChild(contentElement);
+                        subSectionList.appendChild(subSectionListItem);
+                    } else {
+                        // Adiciona os elementos ao elemento pai (articleContentElement)
+                        articleContentElement.appendChild(titleElement);
+                        articleContentElement.appendChild(contentElement);
+                    }
+
+                    // Adiciona os elementos ao elemento pai (articleContentElement)
+                    articleContentElement.appendChild(titleElement);
+                    articleContentElement.appendChild(contentElement);
+                });
             }
 
-            $("#article").html(response);
-            $("#createButton").prop("disabled", false);
+<!--            $("#article").html(response);-->
+<!--            $("#createButton").prop("disabled", false);-->
         });
     }
 
