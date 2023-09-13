@@ -15,68 +15,41 @@ class OpenAIConfig {
     @Value("\${openai.api.url}")
     private lateinit var apiURL: String
 
-    @Value("\${openai.api.message.base}")
-    private val baseMessage: String = ""
-
-    @Value("\${openai.api.message.next}")
-    private val nextMessage: String = ""
-
-    @Value("\${openai.api.message.detail}")
-    private val messageDetail: String = ""
+    @Value("\${openai.api.message.articleSectionTitle}")
+    private val articleSectionTitle: String = ""
 
 
-    @Value("\${openai.api.message.main}")
-    private val messageMain: String = ""
+    @Value("\${openai.api.message.articleSubSectionTitle}")
+    private val articleSubSectionTitle: String = ""
 
-    @Value("\${openai.api.message.sectionTitle}")
-    private val sectionTitle: String =""
 
-    @Value("\${openai.api.message.sectionContent}")
-    private val sectionContent: String =""
-
-    @Bean
-    fun sectionTitle(): String {
-        return sectionTitle
-    }
-    @Bean
-    fun sectionContent(): String {
-        return sectionContent
-    }
-
-    @Bean
-    fun messageMain(): String {
-        return messageMain
-    }
+    @Value("\${openai.api.message.articleSectionContent}")
+    private val articleSectionContent: String = ""
 
     @Bean
     fun apiKey(): String {
         return apiKey
     }
-
     @Bean
     fun apiModel(): String {
         return apiModel
     }
-
     @Bean
     fun apiURL(): String {
         return apiURL
     }
 
     @Bean
-    fun baseMessage(): String {
-        return baseMessage
+    fun articleSectionTitle(): String {
+        return articleSectionTitle
     }
 
     @Bean
-    fun nextMessage(): String {
-        return nextMessage
+    fun articleSubSectionTitle(): String {
+        return articleSubSectionTitle
     }
-
     @Bean
-    fun messageDetail(): String {
-        return messageDetail
+    fun articleSectionContent(): String {
+        return articleSectionContent
     }
-
-
 }
