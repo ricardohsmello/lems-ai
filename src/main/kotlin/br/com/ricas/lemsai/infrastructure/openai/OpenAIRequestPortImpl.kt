@@ -4,7 +4,6 @@ import br.com.ricas.lemsai.domain.ai.AIMessage
 import br.com.ricas.lemsai.domain.ai.OpenAIRequest
 import br.com.ricas.lemsai.domain.ai.OpenAIResponse
 import br.com.ricas.lemsai.domain.port.OpenAIRequestPort
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
