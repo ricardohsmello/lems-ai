@@ -6,8 +6,8 @@ data class Article(
     val sections: List<Section>?
 )
 data class Section(
-    val order: Int,
-    val title: String,
+//    val order: Int,
+    val title: StringBuilder,
     val isSubSection: Boolean,
     val content: StringBuilder
 )
