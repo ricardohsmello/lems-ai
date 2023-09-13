@@ -1,9 +1,11 @@
 package br.com.ricas.lemsai.domain.usecase
 
+import br.com.ricas.lemsai.domain.entity.Article
+
 interface CreateArticleUseCase {
     fun exec(
-        themeTitle: String,
-        sectionsNumber: String,
-        subSectionNumber: String
-    ): StringBuilder
+        articleTheme: String,
+        sectionNumber: Int,
+        subSectionNumber: Int
+    ): Article
 }
