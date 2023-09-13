@@ -21,15 +21,15 @@ class ArticleController(
         @RequestParam sectionNumbers: String,
         @RequestParam subSectionNumbers: String): Article {
 
-        return getArticle()
+//        return getArticle()
 
-//        return createArticleUseCase.exec(
-//            theme,
-//            Integer.parseInt(sectionNumbers),
-//            Integer.parseInt(subSectionNumbers)
-//        ).also {
-//            println(it)
-//        }
+        return createArticleUseCase.exec(
+            theme,
+            Integer.parseInt(sectionNumbers),
+            Integer.parseInt(subSectionNumbers)
+        ).also {
+            println(it)
+        }
     }
 
     private fun getArticle() =
