@@ -24,6 +24,7 @@
                     <!-- Modifique o botão para chamar a função com o tema -->
                     <button id="createButton" class="btn btn-warning btn-block mt-3" style="background-color: #f7dc6f; color: #4a4e4d;" onclick="createArticle()">Criar Artigo</button>
 
+                    <p class="card-text text-center" id="articleTitle"></p>
                     <p class="card-text text-center" id="article"></p>
                 </div>
             </div>
@@ -53,42 +54,38 @@
 
         $.post("/article/create", { theme: theme, sectionNumbers: sectionNumbers, subSectionNumbers: subSectionNumbers}, function(response) {
 
-          if (response.sections) {
-                var articleContentElement = document.getElementById("article");
+              if (response.sections) {
 
-                response.sections.forEach(function(section) {
-                    // Cria um elemento <h2> para exibir o título
-                    var titleElement = document.createElement(section.isSubSection ? "h6" : "h2");
-                    titleElement.textContent = section.title;
-                    titleElement.className = "left-align";
+                    var articleTitle = document.getElementById("articleTitle");
+                    var articleContentElement = document.getElementById("article");
 
-                    // Cria um elemento <p> para exibir o conteúdo
-                    var contentElement = document.createElement("p");
-                    contentElement.textContent = section.content;
-                    contentElement.className = "center";
+                    var articleTitleElement = document.createElement("h1");
+                    articleTitleElement.textContent = response.title;
+                    articleTitle.appendChild(articleTitleElement);
 
-                    var subSectionList;
 
-                    if (section.isSubSection) {
-                        if (!subSectionList) {
-                            subSectionList = document.createElement("ul");
-                            articleContentElement.appendChild(subSectionList);
+                    response.sections.forEach(function(section) {
+                        // Cria um elemento <h2> para exibir o título
+                        var titleElement = document.createElement(section.isSubSection ? "h6" : "h3");
+                        titleElement.textContent = section.title;
+                        titleElement.className = "left-align";
+
+                        // Cria um elemento <p> para exibir o conteúdo
+                        var contentElement = document.createElement("p");
+                        contentElement.textContent = section.content;
+                        contentElement.className = "left-align";
+
+                 // Adiciona margem inferior entre subseções
+                        if (section.isSubSection) {
+                            titleElement.style.marginLeft = "10px"; // 10px ou o valor desejado
+                            contentElement.style.marginLeft = "20px"; // 20px ou o valor desejado
                         }
-                        var subSectionListItem = document.createElement("li");
-                        subSectionListItem.appendChild(titleElement);
-                        subSectionListItem.appendChild(contentElement);
-                        subSectionList.appendChild(subSectionListItem);
-                    } else {
+
                         // Adiciona os elementos ao elemento pai (articleContentElement)
                         articleContentElement.appendChild(titleElement);
                         articleContentElement.appendChild(contentElement);
-                    }
-
-                    // Adiciona os elementos ao elemento pai (articleContentElement)
-                    articleContentElement.appendChild(titleElement);
-                    articleContentElement.appendChild(contentElement);
-                });
-            }
+                    });
+             }
 
 <!--            $("#article").html(response);-->
 <!--            $("#createButton").prop("disabled", false);-->
