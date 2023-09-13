@@ -3,27 +3,24 @@ package br.com.ricas.lemsai.domain.usecase.impl
 import br.com.ricas.lemsai.application.config.OpenAIConfig
 import br.com.ricas.lemsai.domain.ai.AIMessage
 import br.com.ricas.lemsai.domain.port.OpenAIRequestPort
-import br.com.ricas.lemsai.domain.usecase.CreateArticleSectionsTitleUseCase
+import br.com.ricas.lemsai.domain.usecase.CreateArticleSectionContentUseCase
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
 @Service
-class CreateArticleSectionsTitleUseCaseImpl(
+class CreateArticleSectionContentUseCaseImpl(
     @Autowired private val openAIConfig: OpenAIConfig,
     private val openAIRequestPort: OpenAIRequestPort
-) : CreateArticleSectionsTitleUseCase {
-    override fun exec(
-        articleTheme: String,
-        sectionTitle: String,
-        context: StringBuilder
-    ): StringBuilder {
+) : CreateArticleSectionContentUseCase {
+    override fun exec(title: String): StringBuilder {
+        val message = openAIConfig.articleSectionContent().replace(
+            "{title}", title
+        )
 
         val messages = listOf(
             AIMessage(
                 role = "user",
-                content = context.toString() + "\n\n"+ openAIConfig.messageMain()
-                    .replace("{articleTheme}", articleTheme)
-                    .replace("{sectionTitle}", sectionTitle)
+                content = message
             )
         )
 
@@ -31,10 +28,9 @@ class CreateArticleSectionsTitleUseCaseImpl(
             openAIConfig.apiModel(),
             openAIConfig.apiKey(),
             openAIConfig.apiURL(),
-            messages)
+            messages
+        )
 
         return StringBuilder(requestChatGPT.choices[0].message.content)
-
-
     }
 }
