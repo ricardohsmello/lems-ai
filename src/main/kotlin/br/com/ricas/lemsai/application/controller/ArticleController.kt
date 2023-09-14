@@ -19,14 +19,20 @@ class ArticleController(
     fun request(
         @RequestParam theme: String,
         @RequestParam sectionNumbers: String,
-        @RequestParam subSectionNumbers: String): Article {
+        @RequestParam subSectionNumbers: String,
+        @RequestParam minCharSection: String,
+        @RequestParam maxCharSection: String
+        ): Article {
 
+        println("test")
 //        return getArticle()
 
         return createArticleUseCase.exec(
             theme,
             Integer.parseInt(sectionNumbers),
-            Integer.parseInt(subSectionNumbers)
+            Integer.parseInt(subSectionNumbers),
+            Integer.parseInt(minCharSection),
+            Integer.parseInt(maxCharSection)
         ).also {
             println(it)
         }
