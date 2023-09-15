@@ -1,10 +1,11 @@
 package br.com.ricas.lemsai.domain.usecase.impl
 
+import br.com.ricas.lemsai.application.config.ArticleConfig
 import br.com.ricas.lemsai.application.config.OpenAIConfig
 import br.com.ricas.lemsai.domain.entity.Section
-import br.com.ricas.lemsai.domain.usecase.CreateSectionUseCase
 import br.com.ricas.lemsai.domain.usecase.OpenAIRequestUseCase
 import br.com.ricas.lemsai.domain.usecase.PrepareArticleConclusionUseCase
+import br.com.ricas.lemsai.domain.util.logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -14,19 +15,21 @@ class PrepareArticleConclusionUseCaseImpl(
     private val openAIRequestUseCase: OpenAIRequestUseCase
 
 ) : PrepareArticleConclusionUseCase {
+
+    val logger = this.logger()
+
     override fun exec(
         title: String,
-        context: StringBuilder,
-        minChar: Int,
-        maxChar: Int
+        context: StringBuilder
     ): Section {
-        println("Starting Conclusion creation for theme $title")
+
+        logger.info("Starting Conclusion creation for theme $title")
 
         openAIConfig.articleConclusionContent()
             .replace(
-                "{minChar}", minChar.toString()
+                "{minChar}", ArticleConfig.getMinCharSection().toString()
             ).replace(
-                "{maxChar}", maxChar.toString()
+                "{maxChar}", ArticleConfig.getMaxCharSection().toString()
             )
             .replace(
                 "{articleMainTheme}", title
