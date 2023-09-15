@@ -18,7 +18,9 @@ class PrepareArticleSectionUseCaseImpl(
         isSubSection: Boolean,
         sectionTitle: String,
         articleTheme: String,
-        titleAlreadyCreated: StringBuilder
+        titleAlreadyCreated: StringBuilder,
+        minChar: Int,
+        maxChar: Int
     ): Section {
 
         println("Starting $sectionTitle creation")
@@ -33,6 +35,11 @@ class PrepareArticleSectionUseCaseImpl(
             return createSectionUseCase.exec(
                 titlePropertyMessage = titleMessage,
                 contentPropertyMessage = openAIConfig.articleSectionContent()
+                    .replace(
+                        "{minChar}", minChar.toString()
+                    ).replace(
+                        "{maxChar}", maxChar.toString()
+                    )
                     .replace(
                         "{content}", openAIRequestUseCase.requestAnswer(titleMessage).toString()
                     ),

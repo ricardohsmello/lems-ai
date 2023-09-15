@@ -7,6 +7,8 @@ interface PrepareArticleSectionUseCase {
         isSubSection: Boolean,
         sectionTitle: String,
         articleTheme: String,
-        titleAlreadyCreated: StringBuilder
+        titleAlreadyCreated: StringBuilder,
+        minChar: Int,
+        maxChar: Int
     ): Section
 }
