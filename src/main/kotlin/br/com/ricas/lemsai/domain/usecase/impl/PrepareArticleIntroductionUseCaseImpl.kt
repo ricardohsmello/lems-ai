@@ -1,11 +1,12 @@
 package br.com.ricas.lemsai.domain.usecase.impl
 
+import br.com.ricas.lemsai.application.config.ArticleConfig
 import br.com.ricas.lemsai.application.config.OpenAIConfig
 import br.com.ricas.lemsai.domain.entity.Section
-import br.com.ricas.lemsai.domain.usecase.PrepareArticleIntroductionUseCase
 import br.com.ricas.lemsai.domain.usecase.CreateSectionUseCase
 import br.com.ricas.lemsai.domain.usecase.OpenAIRequestUseCase
-import org.slf4j.LoggerFactory
+import br.com.ricas.lemsai.domain.usecase.PrepareArticleIntroductionUseCase
+import br.com.ricas.lemsai.domain.util.logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -16,12 +17,10 @@ class PrepareArticleIntroductionUseCaseImpl(
     private val openAIRequestUseCase: OpenAIRequestUseCase
 ) : PrepareArticleIntroductionUseCase {
 
-    private val logger = LoggerFactory.getLogger(PrepareArticleIntroductionUseCaseImpl::class.java)
+    val logger = this.logger()
 
     override fun exec(
-        title: String,
-        minChar: Int,
-        maxChar: Int
+        title: String
     ): Section {
 
         logger.info("Starting introduction creation for theme $title")
@@ -34,9 +33,9 @@ class PrepareArticleIntroductionUseCaseImpl(
                     titlePropertyMessage = titleMessage,
                     contentPropertyMessage = openAIConfig.articleSectionContent()
                         .replace(
-                            "{minChar}", minChar.toString()
+                            "{minChar}", ArticleConfig.getMinCharSection().toString()
                         ).replace(
-                            "{maxChar}", maxChar.toString()
+                            "{maxChar}", ArticleConfig.getMaxCharSection().toString()
                         )
                         .replace(
                             "{content}", openAIRequestUseCase.requestAnswer(titleMessage).toString()
