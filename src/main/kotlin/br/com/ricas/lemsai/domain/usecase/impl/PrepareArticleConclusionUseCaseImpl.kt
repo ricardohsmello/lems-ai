@@ -16,11 +16,18 @@ class PrepareArticleConclusionUseCaseImpl(
 ) : PrepareArticleConclusionUseCase {
     override fun exec(
         title: String,
-        context: StringBuilder
+        context: StringBuilder,
+        minChar: Int,
+        maxChar: Int
     ): Section {
         println("Starting Conclusion creation for theme $title")
 
         openAIConfig.articleConclusionContent()
+            .replace(
+                "{minChar}", minChar.toString()
+            ).replace(
+                "{maxChar}", maxChar.toString()
+            )
             .replace(
                 "{articleMainTheme}", title
             ).replace(
