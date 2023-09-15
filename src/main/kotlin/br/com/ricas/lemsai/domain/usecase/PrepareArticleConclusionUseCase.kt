@@ -6,6 +6,8 @@ import java.lang.StringBuilder
 interface PrepareArticleConclusionUseCase {
     fun exec(
         title: String,
-        context: StringBuilder
+        context: StringBuilder,
+        minChar: Int,
+        maxChar: Int
     ): Section
 }
