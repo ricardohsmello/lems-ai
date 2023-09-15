@@ -1,10 +1,12 @@
 package br.com.ricas.lemsai.domain.usecase.impl
 
+import br.com.ricas.lemsai.application.config.ArticleConfig
 import br.com.ricas.lemsai.application.config.OpenAIConfig
 import br.com.ricas.lemsai.domain.entity.Section
-import br.com.ricas.lemsai.domain.usecase.PrepareArticleSectionUseCase
 import br.com.ricas.lemsai.domain.usecase.CreateSectionUseCase
 import br.com.ricas.lemsai.domain.usecase.OpenAIRequestUseCase
+import br.com.ricas.lemsai.domain.usecase.PrepareArticleSectionUseCase
+import br.com.ricas.lemsai.domain.util.logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -14,16 +16,17 @@ class PrepareArticleSectionUseCaseImpl(
     private val createSectionUseCase: CreateSectionUseCase,
     private val openAIRequestUseCase: OpenAIRequestUseCase,
 ) : PrepareArticleSectionUseCase {
+
+    val logger = this.logger()
+
     override fun exec(
         isSubSection: Boolean,
         sectionTitle: String,
         articleTheme: String,
-        titleAlreadyCreated: StringBuilder,
-        minChar: Int,
-        maxChar: Int
+        titleAlreadyCreated: StringBuilder
     ): Section {
 
-        println("Starting $sectionTitle creation")
+        logger.info("Starting $sectionTitle creation")
 
         openAIConfig.articleSectionTitle().replace(
             "{articleSectionTitle}", sectionTitle
@@ -36,9 +39,9 @@ class PrepareArticleSectionUseCaseImpl(
                 titlePropertyMessage = titleMessage,
                 contentPropertyMessage = openAIConfig.articleSectionContent()
                     .replace(
-                        "{minChar}", minChar.toString()
+                        "{minChar}", ArticleConfig.getMinCharSection().toString()
                     ).replace(
-                        "{maxChar}", maxChar.toString()
+                        "{maxChar}", ArticleConfig.getMaxCharSection().toString()
                     )
                     .replace(
                         "{content}", openAIRequestUseCase.requestAnswer(titleMessage).toString()
