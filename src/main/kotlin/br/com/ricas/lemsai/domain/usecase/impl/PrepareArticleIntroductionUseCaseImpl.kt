@@ -5,6 +5,7 @@ import br.com.ricas.lemsai.domain.entity.Section
 import br.com.ricas.lemsai.domain.usecase.PrepareArticleIntroductionUseCase
 import br.com.ricas.lemsai.domain.usecase.CreateSectionUseCase
 import br.com.ricas.lemsai.domain.usecase.OpenAIRequestUseCase
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -14,13 +15,16 @@ class PrepareArticleIntroductionUseCaseImpl(
     private val createSectionUseCase: CreateSectionUseCase,
     private val openAIRequestUseCase: OpenAIRequestUseCase
 ) : PrepareArticleIntroductionUseCase {
+
+    private val logger = LoggerFactory.getLogger(PrepareArticleIntroductionUseCaseImpl::class.java)
+
     override fun exec(
         title: String,
         minChar: Int,
         maxChar: Int
     ): Section {
 
-        println("Starting introduction creation for theme $title")
+        logger.info("Starting introduction creation for theme $title")
 
         openAIConfig.articleIntroductionTitle()
             .replace(
