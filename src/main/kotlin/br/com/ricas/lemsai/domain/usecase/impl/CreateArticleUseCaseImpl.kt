@@ -7,9 +7,8 @@ import br.com.ricas.lemsai.domain.usecase.PrepareArticleConclusionUseCase
 import br.com.ricas.lemsai.domain.usecase.PrepareArticleIntroductionUseCase
 import br.com.ricas.lemsai.domain.usecase.PrepareArticleSectionUseCase
 import br.com.ricas.lemsai.domain.util.TimeExecutionControl
+import br.com.ricas.lemsai.domain.util.logger
 import org.springframework.stereotype.Service
-import kotlin.math.max
-import kotlin.math.min
 
 @Service
 class CreateArticleUseCaseImpl(
@@ -19,14 +18,14 @@ class CreateArticleUseCaseImpl(
     private val prepareArticleConclusionUseCase: PrepareArticleConclusionUseCase
 ) : CreateArticleUseCase {
 
+    val logger = this.logger()
     override fun exec(
         articleTheme: String,
         sectionNumber: Int,
-        subSectionNumber: Int,
-        minChar: Int,
-        maxChar: Int
+        subSectionNumber: Int
     ): Article {
-        println(
+
+        logger.info(
             """
             Article settings: 
                 Name $articleTheme
@@ -40,25 +39,19 @@ class CreateArticleUseCaseImpl(
          timeExecutionControl.start {
             createIntroduction(
                 sections = sections,
-                articleTheme = articleTheme,
-                minChar = minChar,
-                maxChar = maxChar
+                articleTheme = articleTheme
             )
 
             createSections(
                 sections = sections,
                 articleTheme = articleTheme,
                 sectionNumber = sectionNumber,
-                subSectionNumber = subSectionNumber,
-                minChar = minChar,
-                maxChar = maxChar
+                subSectionNumber = subSectionNumber
             )
 
             createConclusion(
                 sections = sections,
-                articleTheme = articleTheme,
-                minChar = minChar,
-                maxChar = maxChar
+                articleTheme = articleTheme
             )
 
         }.also {elapsedTime ->
@@ -72,24 +65,18 @@ class CreateArticleUseCaseImpl(
 
     private fun createIntroduction(
         sections: MutableList<Section>,
-        articleTheme: String,
-        minChar: Int,
-        maxChar: Int
+        articleTheme: String
     ) {
-        sections.add(prepareArticleIntroductionUseCase.exec(articleTheme, minChar, maxChar))
+        sections.add(prepareArticleIntroductionUseCase.exec(articleTheme))
     }
 
     private fun createConclusion(
         sections: MutableList<Section>,
-        articleTheme: String,
-        minChar: Int,
-        maxChar: Int
+        articleTheme: String
     ) {
         sections.add(prepareArticleConclusionUseCase.exec(
             title = articleTheme,
-            context = StringBuilder(sections.joinToString(" ") { it.title }),
-            minChar = minChar,
-            maxChar = maxChar
+            context = StringBuilder(sections.joinToString(" ") { it.title })
         ))
     }
 
@@ -98,9 +85,7 @@ class CreateArticleUseCaseImpl(
         sections: MutableList<Section>,
         articleTheme: String,
         sectionNumber: Int,
-        subSectionNumber: Int,
-        minChar: Int,
-        maxChar: Int
+        subSectionNumber: Int
     ) {
         (1..sectionNumber).forEach { index ->
             val section = prepareArticleSectionUseCase.exec(
@@ -108,17 +93,13 @@ class CreateArticleUseCaseImpl(
                 sectionTitle = "Seção $index",
                 articleTheme = articleTheme,
                 titleAlreadyCreated = StringBuilder(sections.joinToString(" ") { it.title }),
-                minChar = minChar,
-                maxChar = maxChar
             )
 
             sections.add(section)
             createSubSections(
                 sections = sections,
                 theme = section.title.toString(),
-                totalSubSections = subSectionNumber,
-                minChar = minChar,
-                maxChar = maxChar
+                totalSubSections = subSectionNumber
             )
         }
     }
@@ -126,18 +107,14 @@ class CreateArticleUseCaseImpl(
     private fun createSubSections(
         sections: MutableList<Section>,
         theme: String,
-        totalSubSections: Int,
-        minChar: Int,
-        maxChar: Int
+        totalSubSections: Int
     ) {
         (1..totalSubSections).forEach { i ->
             val subSection = prepareArticleSectionUseCase.exec(
                 isSubSection = true,
                 sectionTitle = "Subseção $i",
                 articleTheme = theme,
-                titleAlreadyCreated = StringBuilder(sections.joinToString(" ") { it.title }),
-                minChar = minChar,
-                maxChar = maxChar
+                titleAlreadyCreated = StringBuilder(sections.joinToString(" ") { it.title })
             )
 
             sections.add(subSection)
