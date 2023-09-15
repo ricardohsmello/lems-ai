@@ -1,26 +1,26 @@
 import br.com.ricas.lemsai.LemsAiApplication
 import br.com.ricas.lemsai.application.config.OpenAIConfig
-import br.com.ricas.lemsai.domain.ai.OpenAIResponse
 import br.com.ricas.lemsai.domain.port.OpenAIRequestPort
 import br.com.ricas.lemsai.domain.usecase.OpenAIRequestUseCase
+import br.com.ricas.lemsai.domain.usecase.impl.OpenAIRequestUseCaseImpl
 import br.com.ricas.lemsai.fakedata.fakeOpenAIResponse
 import io.mockk.MockKAnnotations
-import io.mockk.Runs
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers.any
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
 
 @SpringBootTest(classes = [LemsAiApplication::class])
 class OpenAIRequestUseCaseImplTest {
 
-    @Autowired
-    private lateinit var openAIRequestUseCase: OpenAIRequestUseCase
+
+    private lateinit var service: OpenAIRequestUseCase
+
+    @MockK
+    private lateinit var openAIConfig: OpenAIConfig
 
     @MockK
     private lateinit var openAIRequestPort: OpenAIRequestPort
@@ -28,6 +28,10 @@ class OpenAIRequestUseCaseImplTest {
     @BeforeEach
     fun setUp() {
         MockKAnnotations.init(this)
+        service = OpenAIRequestUseCaseImpl(
+            openAIConfig = openAIConfig,
+            openAIRequestPort = openAIRequestPort
+        )
     }
 
     @Test
@@ -35,10 +39,9 @@ class OpenAIRequestUseCaseImplTest {
         val inputContent = "Hello, chatbot!"
         val expectedResponse = "Chatbot response here."
 
-        // Mock the behavior of the OpenAIConfig and OpenAIRequestPort
-//        every { openAIConfig.apiModel() } just Runs
-//        every { openAIConfig.apiKey() } returns any()
-//        every { openAIConfig.apiURL() } returns any()
+        every { openAIConfig.apiModel() } returns "gpt-mock"
+        every { openAIConfig.apiKey() } returns "api-mock"
+        every { openAIConfig.apiURL() } returns "url-mock"
 
         every {
             openAIRequestPort.requestChatGPT(
@@ -49,10 +52,8 @@ class OpenAIRequestUseCaseImplTest {
             )
         } returns fakeOpenAIResponse
 
-        // Call the method to be tested
-        val result = openAIRequestUseCase.requestAnswer(inputContent)
+        val result = service.requestAnswer(inputContent)
 
-        // Assert the result
         assertEquals(expectedResponse, result.toString())
     }
 }
