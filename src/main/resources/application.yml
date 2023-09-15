@@ -1,0 +1,13 @@
+server:
+  port: 7077
+
+openai:
+  api:
+    key: api_key
+    url: https://api.openai.com/v1/chat/completions
+    model: gpt-3.5-turbo
+    message:
+      articleIntroductionTitle: "Crie um título sem aspas para um artigo sobre {articleMainTheme}"
+      articleSectionTitle: "Crie um titulo comecando com a palavra {articleSectionTitle} para um artigo sobre {articleMainTheme}. Atencao, Nao repetir os seguintes titulos: {titleAlreadyCreated}"
+      articleConclusionContent: "Crie uma conclusão entre {minChar} e {maxChar} caracteres para um artigo sobre {articleMainTheme} considerando os titulos: {context}"
+      articleSectionContent: "Crie um texto entre {minChar} e {maxChar} caracteres sobre o seguinte titulo: {content}.  Atencao, evite plagio"
