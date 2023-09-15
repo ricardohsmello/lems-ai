@@ -20,7 +20,8 @@
                     <input type="text" id="themeInput" class="form-control mb-3" placeholder="Tema do Artigo">
                     <input type="text" id="sectionNumberInput" class="form-control mb-3" placeholder="Número de Seções">
                     <input type="text" id="subSectionNumberInput" class="form-control mb-3" placeholder="Número de Subseções">
-
+                    <input type="text" id="minCharSectionInput" class="form-control mb-3" placeholder="Min caracteres por Seções (inclui Introdução, Subseção e Conclusão)">
+                    <input type="text" id="maxCharSectionInput" class="form-control mb-3" placeholder="Max caracteres por Seções (inclui Introdução, Subseção e Conclusão)">
                     <!-- Modifique o botão para chamar a função com o tema -->
                     <button id="createButton" class="btn btn-warning btn-block mt-3" style="background-color: #f7dc6f; color: #4a4e4d;" onclick="createArticle()">Criar Artigo</button>
 
@@ -63,6 +64,8 @@
     const theme = $("#themeInput").val();
     const sectionNumbers = $("#sectionNumberInput").val();
     const subSectionNumbers = $("#subSectionNumberInput").val();
+    const minCharSection = $("#minCharSectionInput").val();
+    const maxCharSection = $("#maxCharSectionInput").val();
 
     var contentInfo = document.createElement("p");
     var infoElement = document.getElementById("info");
@@ -71,7 +74,7 @@
 
     $("#createButton").prop("disabled", true);
 
-    $.post("/article/create", { theme: theme, sectionNumbers: sectionNumbers, subSectionNumbers: subSectionNumbers }, function (response) {
+    $.post("/article/create", { theme: theme, sectionNumbers: sectionNumbers, subSectionNumbers: subSectionNumbers, minCharSection: minCharSection, maxCharSection: maxCharSection }, function (response) {
 
         if (response.sections) {
             var articleContentElement = document.getElementById("article");
