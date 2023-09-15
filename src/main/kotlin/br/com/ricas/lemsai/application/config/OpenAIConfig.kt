@@ -1,10 +1,12 @@
 package br.com.ricas.lemsai.application.config
 
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
+@ConfigurationProperties
 class OpenAIConfig {
     @Value("\${openai.api.key}")
     private lateinit var apiKey: String
