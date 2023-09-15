@@ -15,7 +15,7 @@ val fakeOpenAIResponse = OpenAIResponse(
             index = 0,
             message = Message(
                 role = "assistant",
-                content = "Fake assistant response"
+                content = "Chatbot response here."
             ),
             finish_reason = "fake-finish-reason"
         )
