@@ -4,8 +4,6 @@ import br.com.ricas.lemsai.domain.entity.Section
 
 interface PrepareArticleIntroductionUseCase {
     fun exec(
-        title: String,
-        minChar: Int,
-        maxChar: Int
+        title: String
     ): Section
 }
