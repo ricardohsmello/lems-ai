@@ -23,6 +23,7 @@ class OpenAIRequestPortImpl(
         apiURL: String,
         messages: List<AIMessage>
     ): OpenAIResponse {
+
         val headers = createHeaders(apiKey)
         val body = createRequestBody(headers, apiURL, apiModel, messages)
 
