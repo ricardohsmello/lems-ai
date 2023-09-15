@@ -6,8 +6,6 @@ interface CreateArticleUseCase {
     fun exec(
         articleTheme: String,
         sectionNumber: Int,
-        subSectionNumber: Int,
-        minChar: Int,
-        maxChar: Int
+        subSectionNumber: Int
     ): Article
 }
