@@ -15,7 +15,9 @@ class PrepareArticleIntroductionUseCaseImpl(
     private val openAIRequestUseCase: OpenAIRequestUseCase
 ) : PrepareArticleIntroductionUseCase {
     override fun exec(
-        title: String
+        title: String,
+        minChar: Int,
+        maxChar: Int
     ): Section {
 
         println("Starting introduction creation for theme $title")
@@ -27,6 +29,11 @@ class PrepareArticleIntroductionUseCaseImpl(
                 return createSectionUseCase.exec(
                     titlePropertyMessage = titleMessage,
                     contentPropertyMessage = openAIConfig.articleSectionContent()
+                        .replace(
+                            "{minChar}", minChar.toString()
+                        ).replace(
+                            "{maxChar}", maxChar.toString()
+                        )
                         .replace(
                             "{content}", openAIRequestUseCase.requestAnswer(titleMessage).toString()
                         ),
