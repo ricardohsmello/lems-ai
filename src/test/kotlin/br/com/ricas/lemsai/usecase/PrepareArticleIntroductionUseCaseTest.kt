@@ -44,8 +44,6 @@ class PrepareArticleIntroductionUseCaseTest {
     @Test
     fun `should create a new Section successfully`() {
         val title = "Corinthians"
-        val minChar = 100
-        val maxChar = 500
 
         every { openAIConfig.articleIntroductionTitle() } returns "Crie um título sem aspas para um artigo sobre Corinthians"
         every { openAIConfig.articleSectionContent() } returns "Crie um texto entre 100 e 500" +
@@ -56,9 +54,7 @@ class PrepareArticleIntroductionUseCaseTest {
 
         val result = assertDoesNotThrow {
             service.exec(
-                title = title,
-                minChar = minChar,
-                maxChar = maxChar
+                title = title
             )
         }
 
