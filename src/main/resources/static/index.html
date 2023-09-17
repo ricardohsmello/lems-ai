@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Lems-ai Article creator</title>
+    <title>Lems-ai Article Creator</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body style="background-color: #f0f0f0;">
+
 <div class="container-fluid">
     <div class="row justify-content-center">
         <div class="col-sm-8">
             <div class="card mt-5">
                 <div class="card-body">
-                    <h3 class="card-title text-center mb-4">Lemas Article Creator</h3>
-
+                    <h3 class="card-title text-center mb-4" style="color: #007bff;">Lemas Article Creator</h3>
 
                     <!-- Adicione um campo de entrada para o tema -->
                     <input type="text" id="themeInput" class="form-control mb-3" placeholder="Tema do Artigo">
@@ -80,7 +80,7 @@
             var articleContentElement = document.getElementById("article");
 
 
-            contentInfo.textContent = "The article took " + response.durationTime + " to be created"  ;
+            contentInfo.textContent = "O artigo levou " + response.durationTime + " para ser criado"  ;
 
 
             response.sections.forEach(function (section) {
