@@ -20,7 +20,7 @@ http://localhost:8001
 ```
 
 #### App
-![](img/img_01.png)
+![](img/img_001.png)
 
 #### Result
 ![](img/img_04.png)
