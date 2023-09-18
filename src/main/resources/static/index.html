@@ -1,44 +1,87 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lems-ai Article Creator</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="style.css">
-</head>
-<body style="background-color: #f0f0f0;">
+    <style>
+        body {
+            background-color: #f0f0f0;
+        }
 
-<div class="container-fluid">
+        .container {
+            margin-top: 50px;
+        }
+
+        .card {
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .card-title {
+            color: #007bff;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            border-color: #007bff;
+        }
+
+        #createButton {
+            background-color: #f7dc6f;
+            border-color: #f7dc6f;
+            color: #4a4e4d;
+            font-weight: bold;
+        }
+
+        #createButton:hover {
+            background-color: #ffcc29;
+            border-color: #ffcc29;
+        }
+
+        .info-text {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .article-content {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
     <div class="row justify-content-center">
         <div class="col-sm-8">
-            <div class="card mt-5">
+            <div class="card">
                 <div class="card-body">
-                    <h3 class="card-title text-center mb-4" style="color: #007bff;">Lemas Article Creator</h3>
+                    <h3 class="card-title text-center">Lemas Article Creator</h3>
 
-                    <!-- Adicione um campo de entrada para o tema -->
+                    <!-- Campos de entrada para o tema e outros detalhes -->
                     <input type="text" id="themeInput" class="form-control mb-3" placeholder="Tema do Artigo">
                     <input type="text" id="sectionNumberInput" class="form-control mb-3" placeholder="Número de Seções">
                     <input type="text" id="subSectionNumberInput" class="form-control mb-3" placeholder="Número de Subseções">
                     <input type="text" id="minCharSectionInput" class="form-control mb-3" placeholder="Min caracteres por Seções (inclui Introdução, Subseção e Conclusão)">
                     <input type="text" id="maxCharSectionInput" class="form-control mb-3" placeholder="Max caracteres por Seções (inclui Introdução, Subseção e Conclusão)">
-                    <!-- Modifique o botão para chamar a função com o tema -->
-                    <button id="createButton" class="btn btn-warning btn-block mt-3" style="background-color: #f7dc6f; color: #4a4e4d;" onclick="createArticle()">Criar Artigo</button>
+                    <!-- Botão para criar o artigo -->
+                    <button id="createButton" class="btn btn-warning btn-block" onclick="createArticle()">Criar Artigo</button>
 
-                    <p class="card-title text-center mb-4 smaller-font" id="info" style="margin-top: 50px;"></p>
-
+                    <p class="card-title text-center mt-4 info-text" id="info"></p>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<div class="container-fluid">
-    <div class="row justify-content-center">
-        <div class="col-sm-8">
-            <div class="card mt-5">
-                <div class="card-body">
-                    <p class="card-text text-center" id="article"></p>
+    <div  class="d-flex align-items-center justify-content-center article-content">
+        <div id="finalContent" class="col-sm-8"  style="display: none;">
+            <div class="d-flex align-items-center justify-content-center h-100"> <!-- Wrap in a container div -->
+                <div class="card">
+                    <div class="card-body">
+                        <div id="article"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -47,18 +90,6 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<style>
-        /* Seus estilos CSS aqui */
-        .left-align {
-            text-align: left;
-        }
-       .smaller-font {
-         font-size: 16px;
-        }
-        .center {
-            text-align: center;
-        }
-    </style>
 <script>
   function createArticle() {
     const theme = $("#themeInput").val();
@@ -75,6 +106,8 @@
     $("#createButton").prop("disabled", true);
 
     $.post("/article/create", { theme: theme, sectionNumbers: sectionNumbers, subSectionNumbers: subSectionNumbers, minCharSection: minCharSection, maxCharSection: maxCharSection }, function (response) {
+
+            $("#finalContent").css("display", "block");
 
         if (response.sections) {
             var articleContentElement = document.getElementById("article");
@@ -122,7 +155,6 @@
         $("#createButton").prop("disabled", false);
     });
 }
-
 </script>
 </body>
 </html>
