@@ -19,12 +19,15 @@ java -jar .\lems-ai-0.0.1-SNAPSHOT.jar --server.port=7077 --openai.api.key=OPENA
 http://localhost:7077
 ```
 
-#### App
-![](img/img_001.png)
-
 #### Settings
-![](img/img_002.png)
+![](img/img_001.png)
 
 #### Executing
 ![](img/img_004.png)
+
+#### Result
+![](img/img_002.png)
+![](img/img_003.png)
+
+
 
