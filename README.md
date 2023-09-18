@@ -27,7 +27,6 @@ http://localhost:7077
 
 #### Result
 ![](img/img_002.png)
-![](img/img_003.png)
 
 
 
