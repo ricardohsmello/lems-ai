@@ -12,7 +12,6 @@ object ArticleConfig {
     fun getMinCharSection(): Int {
         return minCharSection
     }
-
     fun getMaxCharSection(): Int {
         return maxCharSection
     }
