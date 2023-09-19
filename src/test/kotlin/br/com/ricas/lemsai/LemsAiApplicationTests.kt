@@ -9,5 +9,4 @@ class LemsAiApplicationTests {
 	@Test
 	fun contextLoads() {
 	}
-
 }
