@@ -60,7 +60,5 @@ class PrepareArticleIntroductionUseCaseTest {
 
         assertEquals("Fake Section Title", result.title.toString())
         assertEquals("This is the fake content of the section.", result.content.toString())
-
     }
-
 }
