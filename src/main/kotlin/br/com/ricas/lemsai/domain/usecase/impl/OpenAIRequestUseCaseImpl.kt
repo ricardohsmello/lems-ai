@@ -20,13 +20,13 @@ class OpenAIRequestUseCaseImpl(
             )
         )
 
-        val requestChatGPT = openAIRequestPort.requestChatGPT(
+        openAIRequestPort.requestChatGPT(
             openAIConfig.apiModel(),
             openAIConfig.apiKey(),
             openAIConfig.apiURL(),
             messages
-        )
-
-        return StringBuilder(requestChatGPT.choices[0].message.content)
+        ).also {
+           return StringBuilder(it.choices[0].message.content)
+        }
     }
 }
