@@ -1,4 +1,4 @@
-# lems-ai
+# LemsAI - Article generator
 
 ### Running Jacoco coverage
 ```
