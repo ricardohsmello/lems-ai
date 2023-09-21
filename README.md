@@ -1,6 +1,5 @@
 # lems-ai
 
-
 ### Running Jacoco coverage
 ```
 ./gradlew build jacocoTestReport
