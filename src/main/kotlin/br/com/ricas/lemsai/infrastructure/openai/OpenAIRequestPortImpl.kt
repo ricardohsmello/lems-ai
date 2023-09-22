@@ -55,5 +55,4 @@ class OpenAIRequestPortImpl(
     private fun getResponseBody(responseEntity: ResponseEntity<OpenAIResponse>): OpenAIResponse {
         return responseEntity.body ?: throw RuntimeException("Failed to get OpenAI response")
     }
-
 }
