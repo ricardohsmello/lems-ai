@@ -9,6 +9,7 @@ import br.com.ricas.lemsai.domain.usecase.PrepareArticleSectionUseCase
 import br.com.ricas.lemsai.domain.util.TimeExecutionControl
 import br.com.ricas.lemsai.domain.util.logger
 import org.springframework.stereotype.Service
+
 @Service
 class CreateArticleUseCaseImpl(
     private val timeExecutionControl: TimeExecutionControl,
