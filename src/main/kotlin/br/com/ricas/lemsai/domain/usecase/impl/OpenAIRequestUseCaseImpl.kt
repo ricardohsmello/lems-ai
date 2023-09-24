@@ -20,7 +20,6 @@ class OpenAIRequestUseCaseImpl(
             )
         )
 
-
         openAIRequestPort.requestChatGPT(
             openAIConfig.apiModel(),
             openAIConfig.apiKey(),
