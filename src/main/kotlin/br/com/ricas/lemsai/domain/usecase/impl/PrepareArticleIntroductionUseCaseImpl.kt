@@ -19,7 +19,6 @@ class PrepareArticleIntroductionUseCaseImpl(
 
     val logger = this.logger()
 
-
     override fun exec(
         title: String
     ): Section {
