@@ -18,6 +18,7 @@ class CreateArticleUseCaseImpl(
     private val prepareArticleConclusionUseCase: PrepareArticleConclusionUseCase
 ) : CreateArticleUseCase {
 
+
     val logger = this.logger()
     override fun exec(
         articleTheme: String,
