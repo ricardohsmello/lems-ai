@@ -18,8 +18,6 @@ class PrepareArticleSectionUseCaseImpl(
 ) : PrepareArticleSectionUseCase {
 
     val logger = this.logger()
-
-
     override fun exec(
         isSubSection: Boolean,
         sectionTitle: String,
