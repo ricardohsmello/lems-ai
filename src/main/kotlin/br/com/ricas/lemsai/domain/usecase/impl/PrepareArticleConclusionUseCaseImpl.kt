@@ -18,7 +18,6 @@ class PrepareArticleConclusionUseCaseImpl(
 
     val logger = this.logger()
 
-
     override fun exec(
         title: String,
         context: StringBuilder
