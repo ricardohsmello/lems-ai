@@ -20,7 +20,6 @@ class CreateSectionUseCaseImpl(
 
     ): Section {
 
-
         return Section(
             title = openAIRequestUseCase.requestAnswer(
                 content = titlePropertyMessage
