@@ -9,4 +9,3 @@ interface PrepareArticleConclusionUseCase {
         context: StringBuilder
     ): Section
 }
-
