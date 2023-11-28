@@ -1,6 +1,8 @@
 # Ricas - Article generator
 
 ### Running Jacoco coverage
+
+
 ```
 ./gradlew build jacocoTestReport
 ```
