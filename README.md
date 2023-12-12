@@ -1,5 +1,6 @@
 # Ricas - Article generator
 
+
 ### Running Jacoco coverage
 
 ```
