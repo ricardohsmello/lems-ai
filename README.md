@@ -1,4 +1,4 @@
-# Ricas - Article generator
+# Ricas - Article generator OpenAI
 
 ### Running Jacoco coverage
 
